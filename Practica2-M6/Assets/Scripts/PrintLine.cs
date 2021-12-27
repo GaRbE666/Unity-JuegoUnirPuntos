@@ -8,6 +8,7 @@ public class PrintLine : MonoBehaviour
     [SerializeField] private LineRenderer lineRender;
     [SerializeField] private Transform[] points;
     [SerializeField] private float distance;
+    [SerializeField] private Material[] materials;
 
     Camera cam;
     private bool canSpawn;
@@ -98,6 +99,8 @@ public class PrintLine : MonoBehaviour
         Vector3 resetZ = new Vector3(cam.ScreenToWorldPoint(myTouch.position).x, cam.ScreenToWorldPoint(myTouch.position).y, 0);
         lineRender.SetPosition(0, resetZ);
         lineRender.SetPosition(1, resetZ);
+        SetLineRenderColor(lineRender);
+        SetLineRenderSize(lineRender);
     }
 
     private void FloatingLine(LineRenderer lineRender, Vector3 start, Touch myTouch)
@@ -105,11 +108,52 @@ public class PrintLine : MonoBehaviour
         Vector3 resetZ = new Vector3(cam.ScreenToWorldPoint(myTouch.position).x, cam.ScreenToWorldPoint(myTouch.position).y, 0);
         lineRender.SetPosition(0, start);
         lineRender.SetPosition(1, resetZ);
+        SetLineRenderColor(lineRender);
+        SetLineRenderSize(lineRender);
     }
 
     private void SetLine(LineRenderer lineRender, Vector3 firstPoint, Vector3 secondPoint)
     {
         lineRender.SetPosition(0, firstPoint);
         lineRender.SetPosition(1, secondPoint);
+        SetLineRenderColor(lineRender);
+        SetLineRenderSize(lineRender);
+    }
+
+    private void SetLineRenderSize(LineRenderer lineRender)
+    {
+        lineRender.startWidth = PlayerPrefs.GetFloat("size");
+        lineRender.endWidth = PlayerPrefs.GetFloat("size");
+    }
+
+    private void SetLineRenderColor(LineRenderer lineRender)
+    {
+        switch (PlayerPrefs.GetInt("color"))
+        {
+            case 0:
+                lineRender.material = materials[0];
+                break;
+            case 1:
+                lineRender.material = materials[1];
+                break;
+            case 2:
+                lineRender.material = materials[2];
+                break;
+            case 3:
+                lineRender.material = materials[3];
+                break;
+            case 4:
+                lineRender.material = materials[4];
+                break;
+            case 5:
+                lineRender.material = materials[5];
+                break;
+            case 6:
+                lineRender.material = materials[6];
+                break;
+            case 7:
+                lineRender.material = materials[7];
+                break;
+        }
     }
 }
