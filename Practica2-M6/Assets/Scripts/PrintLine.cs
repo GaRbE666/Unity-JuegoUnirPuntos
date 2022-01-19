@@ -9,6 +9,7 @@ public class PrintLine : MonoBehaviour
     [SerializeField] private Transform[] points;
     [SerializeField] private float distance;
     [SerializeField] private Material[] materials;
+    [SerializeField] private GameObject finishText;
 
     Camera cam;
     private bool canSpawn;
@@ -16,17 +17,20 @@ public class PrintLine : MonoBehaviour
     private LineRenderer lineRenderClone;
     int index;
     private Vector3 startPoint;
+    private PruebaIntersticial pruebaIntersticial;
     #endregion
 
     private void Awake()
     {
         cam = Camera.main;
+        pruebaIntersticial = FindObjectOfType<PruebaIntersticial>();
     }
 
     private void Start()
     {
         canSpawn = true;
         index = 0;
+        finishText.SetActive(false);
     }
 
     // Update is called once per frame
@@ -40,34 +44,34 @@ public class PrintLine : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(cam.ScreenToWorldPoint(myTouch.position), transform.TransformDirection(Vector3.forward), out hit, 1000))
                 {
-                    if (canSpawn)
+                    if (canSpawn) //Si puedo spawnear una linea
                     {
                         canSpawn = false;
-                        lineRenderClone = Instantiate(lineRender, hit.transform.position, Quaternion.identity);
-                        if (index == 0 && hit.transform.position == points[0].position)
+                        lineRenderClone = Instantiate(lineRender, hit.transform.position, Quaternion.identity); //Instancio una línea
+                        if (index == 0 && hit.transform.position == points[0].position) //Comprueo si he pulsado sobre el primer punto
                         {
                             canStart = true;
-                            startPoint = hit.transform.position;
+                            startPoint = hit.transform.position; //Guardo el Vector3 del primero punto en startPoint
                         }
                     }
 
                 }
-                else if (lineRenderClone && canStart)
+                else if (lineRenderClone && canStart) //Si existe la linea y puedo empezar
                 {
-                    FloatingLine(lineRenderClone, startPoint, myTouch);
+                    FloatingLine(lineRenderClone, startPoint, myTouch); 
                 }
-                if (myTouch.phase == TouchPhase.Moved)
+                if (myTouch.phase == TouchPhase.Moved) //comprubeo si arrastra el dedo
                 {
-                    if (index < points.Length - 1)
+                    if (index < points.Length - 1) //Compruebo si ha terminado de unir todos los puntos
                     {
-                        if (canStart)
+                        if (canStart) //Compruebo si puede empezar
                         {
                             CheckActualPoint(myTouch);
                         }
                     }
                 }
             }
-            else if (lineRenderClone)
+            else if (lineRenderClone) //Si existe una instancia de lineRender y levanto el dedo
             {
                 Destroy(lineRenderClone.gameObject);
                 canSpawn = true;
@@ -78,18 +82,19 @@ public class PrintLine : MonoBehaviour
 
     private void CheckActualPoint(Touch myTouch)
     {
-        Vector3 aux = new Vector3(cam.ScreenToWorldPoint(myTouch.position).x, cam.ScreenToWorldPoint(myTouch.position).y, 0);
+        Vector3 aux = new Vector3(cam.ScreenToWorldPoint(myTouch.position).x, cam.ScreenToWorldPoint(myTouch.position).y, 0); //guardo en el vector la posición del dedo
         
-        if (Vector3.Distance(aux, points[index + 1].position) < distance)
+        if (Vector3.Distance(aux, points[index + 1].position) < distance) //Compruebo la distancia que hay entre mi dedo y el siguiente punto
         {
             index++;
             LineRenderer lineaux = Instantiate(lineRender, startPoint, Quaternion.identity);
-            SetLine(lineaux, startPoint, points[index].position);
-            startPoint = points[index].position;
+            SetLine(lineaux, startPoint, points[index].position); //Instancio una linea entre el primer punto y el siguiente
+            startPoint = points[index].position; //Cambio la posición del primer punto para que si suelta el dedo continue desde el punto en el que lo dejó
             SetFirstLine(lineRenderClone, myTouch);
             if (index == points.Length - 1)
             {
-                Debug.Log("Dibujo terminado");
+                finishText.SetActive(true);
+                StartCoroutine(ShowIntersticialAd());
             }
         }
     }
@@ -155,5 +160,11 @@ public class PrintLine : MonoBehaviour
                 lineRender.material = materials[7];
                 break;
         }
+    }
+
+    private IEnumerator ShowIntersticialAd() 
+    {
+        yield return new WaitForSeconds(1f);
+        pruebaIntersticial.ShowIntersticialAd();
     }
 }

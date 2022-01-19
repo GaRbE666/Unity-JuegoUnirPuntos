@@ -7,30 +7,24 @@ public class MenuManager : MonoBehaviour
 {
     [SerializeField] private int maxLevels;
     
-    //private static MenuManager menuManager;
     private const int MENUSCENE = 0;
     private const int CUSTOMLINE = 1;
     private const int LEVELSELECTOR = 2;
 
-    //private void Awake()
-    //{
-    //    if (menuManager != null && menuManager != this)
-    //    {
-    //        Destroy(gameObject);
-    //    }
-    //    else
-    //    {
-    //        menuManager = this;
-    //    }
+    private void Start()
+    {
+        LineSizeChange.SetDefaultLine();
+    }
 
-    //    DontDestroyOnLoad(gameObject);
-    //}
+    public void SelectMap(int map)
+    {
+        SceneManager.LoadScene("Map" + map);
+    }
 
     public void SelectRandomMap()
     {
         int randomNum = Random.Range(3, maxLevels + 2);
         SceneManager.LoadScene(randomNum);
-        Debug.Log(randomNum);
     }
 
     public void CustomizeLine()

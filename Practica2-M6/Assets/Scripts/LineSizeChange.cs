@@ -11,6 +11,12 @@ public class LineSizeChange : MonoBehaviour
     private const string SAVEDCOLOR = "color";
     private const string SAVEDSIZE = "size";
 
+    public static void SetDefaultLine()
+    {
+        PlayerPrefs.SetFloat(SAVEDSIZE, 0.03f);
+        PlayerPrefs.SetInt(SAVEDCOLOR, 0);
+    }
+
     public void ChangeLineSize(float value)
     {
         lineRender.startWidth = value;
