@@ -1,0 +1,1 @@
+Este es una idea muy simple de un juego que consiste en crear dibujos uniendo puntos para movil.
